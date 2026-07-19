@@ -14,12 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
     (host.startsWith("localhost") ? "http" : "https");
   const metadataBase = new URL(`${protocol}://${host}`);
   const description =
-    "کوکی‌ها و دسرهای دست‌ساز Cookie Time؛ انتخاب محصول، ثبت سفارش و ارسال مستقیم در واتساپ.";
+    "منوی همکاری Cookie Time برای سفارش عمده کوکی و دسر دست‌ساز ویژه کافه‌ها؛ تولید روزانه و ثبت مستقیم در واتساپ.";
 
   return {
     metadataBase,
     title: {
-      default: "Cookie Time | سفارش آنلاین کوکی تازه",
+      default: "Cookie Time | سفارش عمده برای کافه‌ها",
       template: "%s | Cookie Time",
     },
     description,
@@ -38,12 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "fa_IR",
-      title: "Cookie Time | یه گاز تا حال خوب",
+      title: "Cookie Time | منوی همکاری کافه‌ها",
       description,
       siteName: "Cookie Time",
       images: [
         {
-          url: new URL("/og.png", metadataBase),
+          url: new URL("/og-wholesale.png", metadataBase),
           width: 1200,
           height: 630,
           alt: "Cookie Time — یه گاز تا حال خوب",
@@ -52,9 +52,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Cookie Time | یه گاز تا حال خوب",
+      title: "Cookie Time | منوی همکاری کافه‌ها",
       description,
-      images: [new URL("/og.png", metadataBase)],
+      images: [new URL("/og-wholesale.png", metadataBase)],
     },
   };
 }

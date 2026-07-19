@@ -24,11 +24,15 @@ export type OrderItem = {
   price: number;
   quantity: number;
   lineTotal: number;
+  wholesaleDiscountEligible?: boolean;
 };
 
 export type Order = {
   id: string;
   orderNumber: string;
+  businessName: string;
+  businessType: string;
+  area: string;
   customerName: string;
   customerPhone: string;
   note: string;

@@ -21,6 +21,9 @@ export const products = sqliteTable("products", {
 export const orders = sqliteTable("orders", {
   id: text("id").primaryKey(),
   orderNumber: text("order_number").notNull().unique(),
+  businessName: text("business_name").notNull().default(""),
+  businessType: text("business_type").notNull().default("کافه"),
+  area: text("area").notNull().default(""),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
   note: text("note").notNull().default(""),

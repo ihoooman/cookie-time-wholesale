@@ -23,6 +23,9 @@ type ProductRow = {
 type OrderRow = {
   id: string;
   order_number: string;
+  business_name: string;
+  business_type: string;
+  area: string;
   customer_name: string;
   customer_phone: string;
   note: string;
@@ -85,6 +88,9 @@ export async function ensureDatabase(): Promise<void> {
       `CREATE TABLE IF NOT EXISTS orders (
         id TEXT PRIMARY KEY,
         order_number TEXT NOT NULL UNIQUE,
+        business_name TEXT NOT NULL DEFAULT '',
+        business_type TEXT NOT NULL DEFAULT 'کافه',
+        area TEXT NOT NULL DEFAULT '',
         customer_name TEXT NOT NULL,
         customer_phone TEXT NOT NULL,
         note TEXT NOT NULL DEFAULT '',
@@ -110,6 +116,20 @@ export async function ensureDatabase(): Promise<void> {
       "CREATE INDEX IF NOT EXISTS discounts_code_idx ON discounts(code)",
     ];
     await db.batch(statements.map((sql) => db.prepare(sql)));
+
+    const orderColumns = await db.prepare("PRAGMA table_info(orders)").all<{ name: string }>();
+    const existingOrderColumns = new Set(orderColumns.results.map((column) => column.name));
+    const orderColumnMigrations: D1PreparedStatement[] = [];
+    if (!existingOrderColumns.has("business_name")) {
+      orderColumnMigrations.push(db.prepare("ALTER TABLE orders ADD COLUMN business_name TEXT NOT NULL DEFAULT ''"));
+    }
+    if (!existingOrderColumns.has("business_type")) {
+      orderColumnMigrations.push(db.prepare("ALTER TABLE orders ADD COLUMN business_type TEXT NOT NULL DEFAULT 'کافه'"));
+    }
+    if (!existingOrderColumns.has("area")) {
+      orderColumnMigrations.push(db.prepare("ALTER TABLE orders ADD COLUMN area TEXT NOT NULL DEFAULT ''"));
+    }
+    if (orderColumnMigrations.length) await db.batch(orderColumnMigrations);
 
     const now = new Date().toISOString();
     const seedStatements = seedProducts.map((product) =>
@@ -171,6 +191,9 @@ function mapOrder(row: OrderRow): Order {
   return {
     id: row.id,
     orderNumber: row.order_number,
+    businessName: row.business_name,
+    businessType: row.business_type,
+    area: row.area,
     customerName: row.customer_name,
     customerPhone: row.customer_phone,
     note: row.note,
@@ -368,6 +391,9 @@ export async function deleteDiscount(id: string): Promise<void> {
 }
 
 export async function createOrder(input: {
+  businessName: string;
+  businessType: string;
+  area: string;
   customerName: string;
   customerPhone: string;
   note: string;
@@ -380,7 +406,7 @@ export async function createOrder(input: {
   const items: OrderItem[] = input.cart.map((cartItem) => {
     const product = productMap.get(cartItem.productId);
     if (!product) throw new Error("یکی از محصولات دیگر در دسترس نیست.");
-    const quantity = Math.max(1, Math.min(99, Math.floor(cartItem.quantity)));
+    const quantity = Math.max(1, Math.min(999, Math.floor(cartItem.quantity)));
     if (product.stockQty < quantity) {
       throw new Error(`موجودی ${product.name} کافی نیست.`);
     }
@@ -390,9 +416,12 @@ export async function createOrder(input: {
       price: product.price,
       quantity,
       lineTotal: product.price * quantity,
+      wholesaleDiscountEligible: quantity > 20,
     };
   });
   if (!items.length) throw new Error("سبد خرید خالی است.");
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  if (totalQuantity < 10) throw new Error("حداقل سفارش همکاری ۱۰ عدد است.");
 
   const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0);
   const discount = input.discountCode ? await getDiscount(input.discountCode) : null;
@@ -404,7 +433,10 @@ export async function createOrder(input: {
   const now = new Date();
   const order: Order = {
     id: crypto.randomUUID(),
-    orderNumber: `CT-${now.toISOString().slice(2, 10).replaceAll("-", "")}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`,
+    orderNumber: `CT-W-${now.toISOString().slice(2, 10).replaceAll("-", "")}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`,
+    businessName: input.businessName.trim().slice(0, 100),
+    businessType: input.businessType.trim().slice(0, 40),
+    area: input.area.trim().slice(0, 100),
     customerName: input.customerName.trim().slice(0, 80),
     customerPhone: input.customerPhone.trim().slice(0, 20),
     note: input.note.trim().slice(0, 500),
@@ -419,11 +451,14 @@ export async function createOrder(input: {
   const operations = [
     db
       .prepare(
-        "INSERT INTO orders (id, order_number, customer_name, customer_phone, note, items_json, subtotal, discount_code, discount_amount, total, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO orders (id, order_number, business_name, business_type, area, customer_name, customer_phone, note, items_json, subtotal, discount_code, discount_amount, total, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       )
       .bind(
         order.id,
         order.orderNumber,
+        order.businessName,
+        order.businessType,
+        order.area,
         order.customerName,
         order.customerPhone,
         order.note,

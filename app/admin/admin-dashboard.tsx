@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { BadgePercent, ExternalLink, LayoutDashboard, LogOut, Package, Plus, ShoppingCart } from "lucide-react";
 import type { Discount, Order, Product, ProductCategory } from "@/lib/types";
 
 type AdminTab = "overview" | "products" | "orders" | "discounts";
@@ -211,29 +212,29 @@ export function AdminDashboard({ adminName, signOutPath }: { adminName: string; 
   }
 
   const tabTitle = {
-    overview: "گزارش فروش",
+    overview: "گزارش همکاری",
     products: "مدیریت محصولات",
-    orders: "سفارش‌ها",
+    orders: "سفارش‌های عمده",
     discounts: "کدهای تخفیف",
   }[tab];
 
   return (
     <main className="admin-shell">
-      <aside className="admin-sidebar glass-regular">
+      <aside className="admin-sidebar liquid-regular">
         <Link className="admin-logo" href="/"><img src="/brand/logo-burgundy.png" alt="Cookie Time" /></Link>
         <nav>
-          <button className={tab === "overview" ? "active" : ""} onClick={() => setTab("overview")}><span>◫</span>گزارش</button>
-          <button className={tab === "products" ? "active" : ""} onClick={() => setTab("products")}><span>◉</span>محصولات</button>
-          <button className={tab === "orders" ? "active" : ""} onClick={() => setTab("orders")}><span>▤</span>سفارش‌ها</button>
-          <button className={tab === "discounts" ? "active" : ""} onClick={() => setTab("discounts")}><span>٪</span>تخفیف‌ها</button>
+          <button className={tab === "overview" ? "active" : ""} onClick={() => setTab("overview")}><span><LayoutDashboard size={18} /></span>گزارش</button>
+          <button className={tab === "products" ? "active" : ""} onClick={() => setTab("products")}><span><Package size={18} /></span>محصولات</button>
+          <button className={tab === "orders" ? "active" : ""} onClick={() => setTab("orders")}><span><ShoppingCart size={18} /></span>سفارش‌ها</button>
+          <button className={tab === "discounts" ? "active" : ""} onClick={() => setTab("discounts")}><span><BadgePercent size={18} /></span>تخفیف‌ها</button>
         </nav>
-        <div className="admin-profile"><span>{adminName.slice(0, 1)}</span><div><strong>{adminName}</strong><a href={signOutPath}>خروج از حساب</a></div></div>
+        <div className="admin-profile"><span>{adminName.slice(0, 1)}</span><div><strong>{adminName}</strong><a href={signOutPath}><LogOut size={13} /> خروج از حساب</a></div></div>
       </aside>
 
       <section className="admin-content">
         <header className="admin-header">
           <div><span>پنل مدیریت Cookie Time</span><h1>{tabTitle}</h1></div>
-          <div><Link href="/">مشاهده فروشگاه</Link>{tab === "products" && <button onClick={startCreate}>＋ محصول جدید</button>}</div>
+          <div><Link href="/"><ExternalLink size={16} /> مشاهده سایت</Link>{tab === "products" && <button onClick={startCreate}><Plus size={16} /> محصول جدید</button>}</div>
         </header>
 
         {error && <div className="admin-error" role="alert"><span>{error}</span><button onClick={() => setError("")}>×</button></div>}
@@ -242,9 +243,9 @@ export function AdminDashboard({ adminName, signOutPath }: { adminName: string; 
             {tab === "overview" && stats && (
               <div className="admin-overview">
                 <div className="stats-grid">
-                  <article><span>فروش کل</span><strong>{nf.format(stats.revenue)} <small>تومان</small></strong><em>از سفارش‌های ثبت‌شده</em></article>
-                  <article><span>تعداد سفارش</span><strong>{nf.format(stats.orderCount)}</strong><em>میانگین {nf.format(stats.averageOrder)} تومان</em></article>
-                  <article><span>آیتم فروخته‌شده</span><strong>{nf.format(stats.itemCount)}</strong><em>{nf.format(stats.activeProducts)} محصول فعال</em></article>
+                  <article><span>ارزش سفارش‌ها</span><strong>{nf.format(stats.revenue)} <small>تومان</small></strong><em>برآورد سفارش‌های همکاری</em></article>
+                  <article><span>سفارش عمده</span><strong>{nf.format(stats.orderCount)}</strong><em>میانگین {nf.format(stats.averageOrder)} تومان</em></article>
+                  <article><span>محصول سفارش‌شده</span><strong>{nf.format(stats.itemCount)}</strong><em>{nf.format(stats.activeProducts)} محصول فعال</em></article>
                   <article className={stats.lowStock ? "warning" : ""}><span>موجودی کم</span><strong>{nf.format(stats.lowStock)}</strong><em>محصول با ۵ عدد یا کمتر</em></article>
                 </div>
                 <div className="overview-panels">
@@ -268,7 +269,7 @@ export function AdminDashboard({ adminName, signOutPath }: { adminName: string; 
 
             {tab === "orders" && (
               <div className="admin-panel orders-panel">
-                {orders.length ? <div className="admin-table-scroll"><table className="admin-table"><thead><tr><th>شماره</th><th>مشتری</th><th>محصولات</th><th>مبلغ</th><th>زمان</th><th></th></tr></thead><tbody>{orders.map((order) => <tr key={order.id}><td><strong dir="ltr">{order.orderNumber}</strong></td><td><div className="customer-cell"><strong>{order.customerName}</strong><a href={`tel:${order.customerPhone}`} dir="ltr">{order.customerPhone}</a>{order.note && <small>{order.note}</small>}</div></td><td><div className="order-items-cell">{order.items.map((item) => <span key={item.productId}>{nf.format(item.quantity)}× {item.name}</span>)}</div></td><td><strong>{nf.format(order.total)} تومان</strong>{order.discountAmount > 0 && <small className="discount-note">{nf.format(order.discountAmount)} تخفیف</small>}</td><td>{dtf.format(new Date(order.createdAt))}</td><td><button className="text-danger" onClick={() => removeOrder(order)}>حذف</button></td></tr>)}</tbody></table></div> : <p className="panel-empty large">هنوز سفارشی ثبت نشده است.</p>}
+                {orders.length ? <div className="admin-table-scroll"><table className="admin-table"><thead><tr><th>شماره</th><th>مجموعه</th><th>مسئول سفارش</th><th>محصولات</th><th>مبلغ برآوردی</th><th>زمان</th><th></th></tr></thead><tbody>{orders.map((order) => <tr key={order.id}><td><strong dir="ltr">{order.orderNumber}</strong></td><td><div className="customer-cell"><strong>{order.businessName || "ثبت‌نشده"}</strong><span>{order.businessType || "کافه"} · {order.area || "بدون منطقه"}</span></div></td><td><div className="customer-cell"><strong>{order.customerName}</strong><a href={`tel:${order.customerPhone}`} dir="ltr">{order.customerPhone}</a>{order.note && <small>{order.note}</small>}</div></td><td><div className="order-items-cell">{order.items.map((item) => <span key={item.productId} className={item.wholesaleDiscountEligible ? "bulk-item" : ""}>{nf.format(item.quantity)}× {item.name}{item.wholesaleDiscountEligible ? " · تخفیف ۲۰+" : ""}</span>)}</div></td><td><strong>{nf.format(order.total)} تومان</strong>{order.discountAmount > 0 && <small className="discount-note">{nf.format(order.discountAmount)} تخفیف</small>}</td><td>{dtf.format(new Date(order.createdAt))}</td><td><button className="text-danger" onClick={() => removeOrder(order)}>حذف</button></td></tr>)}</tbody></table></div> : <p className="panel-empty large">هنوز سفارش عمده‌ای ثبت نشده است.</p>}
               </div>
             )}
 
