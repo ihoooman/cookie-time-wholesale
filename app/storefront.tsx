@@ -48,6 +48,7 @@ export function Storefront() {
   const [discountLoading, setDiscountLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [orderResult, setOrderResult] = useState<CompletedOrder | null>(null);
+  const [headerOnLight, setHeaderOnLight] = useState(false);
   const [customer, setCustomer] = useState({
     businessName: "",
     businessType: "کافه",
@@ -57,6 +58,7 @@ export function Storefront() {
     note: "",
   });
   const menuRef = useRef<HTMLElement>(null);
+  const heroPrimaryRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const restoreTimer = window.setTimeout(() => {
@@ -73,6 +75,20 @@ export function Storefront() {
   useEffect(() => {
     localStorage.setItem("cookie-time-cart", JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    function syncHeaderContrast() {
+      const heroBottom = heroPrimaryRef.current?.getBoundingClientRect().bottom ?? 0;
+      setHeaderOnLight(heroBottom <= 104);
+    }
+    syncHeaderContrast();
+    window.addEventListener("scroll", syncHeaderContrast, { passive: true });
+    window.addEventListener("resize", syncHeaderContrast);
+    return () => {
+      window.removeEventListener("scroll", syncHeaderContrast);
+      window.removeEventListener("resize", syncHeaderContrast);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -208,9 +224,9 @@ export function Storefront() {
       <div className="ambient ambient-one" aria-hidden="true" />
       <div className="ambient ambient-two" aria-hidden="true" />
 
-      <header className="site-header liquid-clear">
+      <header className={`site-header liquid-clear${headerOnLight ? " is-over-light" : ""}`}>
         <a className="brand" href="#top" aria-label="Cookie Time - صفحه اصلی">
-          <img src="/brand/logo-cream.png" alt="Cookie Time" />
+          <img src={headerOnLight ? "/brand/logo-burgundy.png" : "/brand/logo-cream.png"} alt="Cookie Time" />
         </a>
         <nav className="desktop-nav" aria-label="ناوبری اصلی">
           <button type="button" onClick={scrollToMenu}><Cookie size={17} /> منوی همکاری</button>
@@ -225,7 +241,7 @@ export function Storefront() {
       </header>
 
       <section className="hero" id="top">
-        <article className="hero-primary">
+        <article className="hero-primary" ref={heroPrimaryRef}>
           <div className="hero-copy">
             <span className="eyebrow">منوی همکاری کافه‌ها</span>
             <h1>ویترینت رو<br />تازه‌تر کن</h1>
