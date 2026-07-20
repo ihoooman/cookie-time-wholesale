@@ -25,7 +25,7 @@ test("storefront enforces the Persian wholesale WhatsApp contract", async () => 
     source("lib/db.ts"),
   ]);
 
-  assert.match(layout, /<html lang="fa" dir="rtl">/);
+  assert.match(layout, /<html lang="fa" dir="rtl" suppressHydrationWarning>/);
   assert.match(storefront, /منوی همکاری کافه‌ها/);
   assert.match(storefront, /نام کافه یا مجموعه/);
   assert.match(storefront, /منطقه \/ محله/);
@@ -137,6 +137,27 @@ test("liquid glass is tuned independently for Safari and Chromium", async () => 
   assert.match(glassEngine, /dataset\.glassEngine = isSafari \? "safari" : "chromium"/);
   assert.match(productionStyles, /(?:^|[;{])backdrop-filter:\s*blur\(var\(--glass-clear-blur\)\)/);
   assert.match(productionStyles, /-webkit-backdrop-filter:\s*blur\(var\(--glass-clear-blur\)\)/);
+});
+
+test("appearance supports system, light, and dark modes before hydration", async () => {
+  const [layout, switcher, styles] = await Promise.all([
+    source("app/layout.tsx"),
+    source("app/theme-switcher.tsx"),
+    source("app/globals.css"),
+  ]);
+
+  assert.match(layout, /cookie-time-theme/);
+  assert.match(layout, /prefers-color-scheme: dark/);
+  assert.match(layout, /root\.dataset\.themeMode = mode/);
+  assert.match(layout, /root\.dataset\.theme = theme/);
+  assert.match(layout, /colorScheme: "light dark"/);
+  assert.match(layout, /<ThemeSwitcher \/>/);
+  assert.match(switcher, /"system" \| "light" \| "dark"/);
+  assert.match(switcher, /localStorage\.setItem\(THEME_STORAGE_KEY, mode\)/);
+  assert.match(switcher, /systemPreference\.addEventListener\("change", syncSystemTheme\)/);
+  assert.match(switcher, /role="radiogroup"/);
+  assert.match(styles, /html\[data-theme="dark"\]/);
+  assert.match(styles, /\.theme-switcher/);
 });
 
 test("public catalog ships complete technical and content SEO", async () => {
