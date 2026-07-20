@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ArrowRight, LockKeyhole } from "lucide-react";
 import { getAuthorizedAdmin } from "@/lib/admin";
 import { GoogleLogin } from "./google-login";
+import { PasswordLogin } from "./password-login";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,8 @@ export default async function AdminLoginPage() {
         <span className="login-icon"><LockKeyhole size={24} /></span>
         <p className="eyebrow dark">پنل مدیریت همکاری</p>
         <h1>ورود مدیر Cookie Time</h1>
-        <p>برای مدیریت محصولات و سفارش‌های عمده با حساب Google مجاز وارد شوید.</p>
+        <p>برای مدیریت محصولات و سفارش‌های عمده با ایمیل و رمز مدیر یا حساب Google مجاز وارد شوید.</p>
+        <PasswordLogin />
         <GoogleLogin />
       </section>
     </main>

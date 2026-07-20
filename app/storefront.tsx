@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   ArrowLeft,
   BadgePercent,
@@ -33,9 +34,9 @@ const categories: { id: CategoryFilter; label: string }[] = [
 
 const priceFormatter = new Intl.NumberFormat("fa-IR");
 
-export function Storefront() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export function Storefront({ initialProducts }: { initialProducts: Product[] }) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [loading, setLoading] = useState(initialProducts.length === 0);
   const [loadError, setLoadError] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [cart, setCart] = useState<Cart>({});
@@ -244,8 +245,8 @@ export function Storefront() {
         <article className="hero-primary" ref={heroPrimaryRef}>
           <div className="hero-copy">
             <span className="eyebrow">منوی همکاری کافه‌ها</span>
-            <h1>ویترینت رو<br />تازه‌تر کن</h1>
-            <p>کوکی و دسر دست‌ساز، تولید روزانه و آماده سرو؛ برای کافه‌هایی که کیفیت ثابت و تأمین منظم می‌خواهند.</p>
+            <h1><span>سفارش عمده</span><span>کوکی و دسر</span></h1>
+            <p>تولید روزانه Cookie Time برای کافه‌ها و مجموعه‌های تهران؛ کوکی و دسر دست‌ساز، آماده سرو و مناسب تأمین منظم ویترین.</p>
             <button className="primary-action liquid-clear" type="button" onClick={scrollToMenu}>
               شروع سفارش عمده
               <ArrowLeft size={20} />
@@ -254,7 +255,7 @@ export function Storefront() {
           <div className="hero-product" aria-hidden="true">
             <span className="hero-orbit orbit-one" />
             <span className="hero-orbit orbit-two" />
-            <img src="/products/cookie-nutella.webp" alt="" />
+            <img src="/products/cookie-nutella.webp" alt="" fetchPriority="high" />
           </div>
         </article>
         <article className="bento-card bento-fresh">
@@ -317,7 +318,7 @@ export function Storefront() {
                 <div className="product-info">
                   <div>
                     <span className="product-meta">{product.weightLabel}</span>
-                    <h3>{product.name}</h3>
+                    <h3><Link href={`/products/${product.slug}`}>{product.name}</Link></h3>
                   </div>
                   <p>{product.description}</p>
                   <div className="product-actions">
@@ -365,6 +366,40 @@ export function Storefront() {
           <div><strong>تازه</strong><span>تولید روزانه</span></div>
           <div><strong>ثابت</strong><span>وزن و کیفیت هر سفارش</span></div>
           <div><strong>آماده</strong><span>سرو در کافه و ویترین</span></div>
+        </div>
+      </section>
+
+      <section className="seo-content" aria-labelledby="wholesale-guide-title">
+        <div className="seo-intro">
+          <span className="eyebrow dark">راهنمای همکاری</span>
+          <h2 id="wholesale-guide-title">سفارش عمده کوکی و دسر در تهران</h2>
+          <p>
+            Cookie Time برای کافه، رستوران، هتل و فروشگاه‌هایی که به تأمین منظم دسر نیاز دارند،
+            کوکی‌های دست‌ساز، جارکیک و کیک اسلایسی را با قیمت همکاری تولید می‌کند. محصولات با
+            وزن مشخص و بسته‌بندی آماده سرو تهیه می‌شوند تا چیدمان و مدیریت ویترین ساده‌تر باشد.
+          </p>
+          <p>
+            منوی عمده شامل کوکی نوتلا، لوتوس، دبل چاکلت، پسته و رژیمی در کنار جارکیک تیرامیسو،
+            شکلاتی و سه‌شیر پسته است. برای دیدن مشخصات، ترکیبات و قیمت هر گزینه روی نام محصول بزنید.
+          </p>
+        </div>
+        <div className="faq-grid">
+          <article className="liquid-regular">
+            <h3>حداقل سفارش عمده چقدر است؟</h3>
+            <p>حداقل سفارش همکاری ۱۰ عدد است و می‌توانید این تعداد را از ترکیب محصولات مختلف انتخاب کنید.</p>
+          </article>
+          <article className="liquid-regular">
+            <h3>سفارش چه زمانی آماده می‌شود؟</h3>
+            <p>زمان معمول آماده‌سازی ۴۸ ساعت است. سفارش‌های بالای ۵۰ عدد به هماهنگی حداقل ۷۲ ساعت قبل نیاز دارند.</p>
+          </article>
+          <article className="liquid-regular">
+            <h3>چطور سفارش را ثبت کنم؟</h3>
+            <p>محصولات را به سبد اضافه کنید، اطلاعات مجموعه را بنویسید و متن آماده سفارش را مستقیم در واتساپ بفرستید.</p>
+          </article>
+          <article className="liquid-regular">
+            <h3>قیمت‌ها شامل ارسال هستند؟</h3>
+            <p>قیمت‌های سایت مخصوص همکاری عمده‌اند و هزینه ارسال پس از بررسی منطقه و تعداد سفارش جداگانه اعلام می‌شود.</p>
+          </article>
         </div>
       </section>
 

@@ -33,18 +33,27 @@ test("storefront enforces the Persian wholesale WhatsApp contract", async () => 
   assert.match(database, /حداقل سفارش همکاری ۱۰ عدد/);
 });
 
-test("admin uses verified Google sign-in for the single approved account", async () => {
-  const [admin, login, sessionRoute] = await Promise.all([
+test("admin supports restricted Google and password sign-in", async () => {
+  const [admin, googleLogin, googleSessionRoute, passwordLogin, passwordSessionRoute] = await Promise.all([
     source("lib/admin.ts"),
     source("app/admin/login/google-login.tsx"),
     source("app/api/auth/google/session/route.ts"),
+    source("app/admin/login/password-login.tsx"),
+    source("app/api/auth/password/session/route.ts"),
   ]);
 
   assert.match(admin, /hoomihooman@gmail\.com/);
   assert.match(admin, /createRemoteJWKSet/);
   assert.match(admin, /email_verified/);
-  assert.match(login, /accounts\.google\.com\/gsi\/client/);
-  assert.match(sessionRoute, /verifyGoogleCredential/);
+  assert.match(admin, /ADMIN_PASSWORD/);
+  assert.match(admin, /timingSafeEqual/);
+  assert.match(admin, /MAX_LOGIN_ATTEMPTS = 5/);
+  assert.match(googleLogin, /accounts\.google\.com\/gsi\/client/);
+  assert.match(googleSessionRoute, /verifyGoogleCredential/);
+  assert.match(passwordLogin, /autocomplete="current-password"/i);
+  assert.match(passwordSessionRoute, /verifyPasswordCredential/);
+  assert.match(passwordSessionRoute, /Retry-After/);
+  assert.doesNotMatch(admin + passwordLogin + passwordSessionRoute, /hoomanhooman/i);
 });
 
 test("deployment includes persistent storage, real media, and social metadata", async () => {
@@ -99,4 +108,36 @@ test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
   assert.match(prepareScript, /migrations_dir/);
   assert.match(prepareScript, /kv_namespaces/);
   assert.match(guide, /Workers & Pages/);
+});
+
+test("public catalog ships complete technical and content SEO", async () => {
+  const [layout, homepage, storefront, sitemap, robots, productPage, worker, adminLayout] = await Promise.all([
+    source("app/layout.tsx"),
+    source("app/page.tsx"),
+    source("app/storefront.tsx"),
+    source("app/sitemap.ts"),
+    source("app/robots.ts"),
+    source("app/products/[slug]/page.tsx"),
+    source("worker/index.ts"),
+    source("app/admin/layout.tsx"),
+  ]);
+
+  assert.match(layout, /https:\/\/seller\.time-cookie\.com/);
+  assert.match(layout, /سفارش عمده کوکی و دسر در تهران/);
+  assert.match(layout, /alternates: \{ canonical: "\/" \}/);
+  assert.match(layout, /"max-image-preview": "large"/);
+  assert.match(homepage, /"@type": "Organization"/);
+  assert.match(homepage, /"@type": "ItemList"/);
+  assert.match(homepage, /initialProducts=\{products\}/);
+  assert.match(storefront, /<span>سفارش عمده<\/span><span>کوکی و دسر<\/span>/);
+  assert.match(storefront, /سفارش عمده کوکی و دسر در تهران/);
+  assert.match(storefront, /href=\{`\/products\/\$\{product\.slug\}`\}/);
+  assert.match(sitemap, /products\/\$\{encodeURIComponent\(product\.slug\)\}/);
+  assert.match(robots, /sitemap\.xml/);
+  assert.match(robots, /"\/admin"/);
+  assert.match(productPage, /"@type": "Product"/);
+  assert.match(productPage, /priceCurrency: "IRR"/);
+  assert.match(productPage, /product\.price \* 10/);
+  assert.match(adminLayout, /index: false/);
+  assert.match(worker, /X-Robots-Tag/);
 });

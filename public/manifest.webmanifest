@@ -1,7 +1,7 @@
 {
   "name": "Cookie Time",
   "short_name": "Cookie Time",
-  "description": "سفارش آنلاین کوکی و دسرهای دست‌ساز کوکی تایم",
+  "description": "سفارش عمده کوکی، جارکیک و دسرهای دست‌ساز Cookie Time برای کافه‌ها و مجموعه‌های تهران",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f1e8",

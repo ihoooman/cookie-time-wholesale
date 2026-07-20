@@ -22,10 +22,11 @@ npm run cf:setup
 
 ## ۲. متغیرها و Secrets
 
-در Worker > Settings > Variables and Secrets این دو مقدار را وارد کنید:
+در Worker > Settings > Variables and Secrets این سه مقدار را وارد کنید:
 
 - `GOOGLE_CLIENT_ID`: شناسه OAuth Web گوگل
 - `AUTH_SECRET`: رشته تصادفی حداقل ۳۲ کاراکتری و از نوع Secret
+- `ADMIN_PASSWORD`: رمز ورود مدیر و از نوع Secret؛ این مقدار نباید در GitHub ثبت شود
 
 برای OAuth گوگل، دامنه نهایی Worker را در Authorized JavaScript origins قرار
 دهید. `keep_vars` فعال است تا deployهای بعدی این مقادیر داشبورد را پاک نکنند.

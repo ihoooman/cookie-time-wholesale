@@ -10,9 +10,10 @@
 - زمان آماده‌سازی استاندارد ۴۸ ساعت و هشدار ۷۲ ساعته برای سفارش‌های بالای ۵۰ عدد
 - لینک واتساپ با متن کامل سفارش برای شماره مجموعه
 - پنل مدیریت محصولات، عکس‌ها، موجودی، سفارش‌ها و کد تخفیف
-- ورود Google فقط برای `hoomihooman@gmail.com`
+- ورود با رمز Cloudflare Secret یا Google فقط برای `hoomihooman@gmail.com`
 - گزارش فروش و محصولات پرفروش
 - PWA قابل نصب با طراحی موبایل‌محور و Liquid Glass
+- سئوی فنی و محتوایی با HTML اولیه محصولات، صفحات مستقل محصول، canonical، sitemap، robots و JSON-LD
 - Cloudflare D1 برای داده‌ها و Workers KV رایگان برای تصاویر آپلودی
 
 ## اجرا
@@ -27,9 +28,11 @@ npm run dev
 ```env
 GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
 AUTH_SECRET=a-random-secret-with-at-least-32-characters
+ADMIN_PASSWORD=a-strong-password-kept-only-in-secrets
 ```
 
-در Google Cloud یک OAuth Client از نوع **Web application** بسازید و origin دامنه
+`ADMIN_PASSWORD` را هرگز commit نکنید و فقط در فایل محلی نادیده‌گرفته‌شده یا
+Cloudflare Secrets قرار دهید. در Google Cloud یک OAuth Client از نوع **Web application** بسازید و origin دامنه
 سایت را در Authorized JavaScript origins قرار دهید. توکن Google در سرور با کلیدهای
 عمومی Google بررسی می‌شود و فقط ایمیل مدیر پذیرفته خواهد شد.
 
@@ -43,7 +46,8 @@ npm run db:generate
 
 برای استقرار مستقیم، bindingهای Cloudflare با نام‌های `DB` (D1) و `MEDIA_KV`
 (Workers KV) و همین دو متغیر محیطی لازم‌اند. شماره مقصد واتساپ در
-`lib/whatsapp.ts` تعریف شده است.
+`lib/whatsapp.ts` تعریف شده است. ورود با رمز به‌ازای هر IP پس از ۵ تلاش ناموفق
+برای ۱۵ دقیقه محدود می‌شود.
 
 راهنمای اتصال مستقیم GitHub به Cloudflare Workers & Pages در
 [`CLOUDFLARE.md`](./CLOUDFLARE.md) قرار دارد.

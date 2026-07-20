@@ -18,8 +18,18 @@ const LOCAL_ADMIN: AdminUser = {
   displayName: "مدیر محلی",
 };
 
-function runtimeEnv(): { GOOGLE_CLIENT_ID?: string; AUTH_SECRET?: string } {
-  return env as unknown as { GOOGLE_CLIENT_ID?: string; AUTH_SECRET?: string };
+function runtimeEnv(): {
+  GOOGLE_CLIENT_ID?: string;
+  AUTH_SECRET?: string;
+  ADMIN_PASSWORD?: string;
+  MEDIA_KV?: KVNamespace;
+} {
+  return env as unknown as {
+    GOOGLE_CLIENT_ID?: string;
+    AUTH_SECRET?: string;
+    ADMIN_PASSWORD?: string;
+    MEDIA_KV?: KVNamespace;
+  };
 }
 
 function authSecret(): Uint8Array {
@@ -37,6 +47,74 @@ export function getGoogleClientId(): string | null {
 
 export function isAdminEmail(email: string): boolean {
   return email.trim().toLowerCase() === ADMIN_EMAIL;
+}
+
+async function timingSafeEqual(left: string, right: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const [leftHash, rightHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(left)),
+    crypto.subtle.digest("SHA-256", encoder.encode(right)),
+  ]);
+  const leftBytes = new Uint8Array(leftHash);
+  const rightBytes = new Uint8Array(rightHash);
+  let difference = leftBytes.length ^ rightBytes.length;
+  for (let index = 0; index < leftBytes.length; index += 1) {
+    difference |= leftBytes[index] ^ rightBytes[index];
+  }
+  return difference === 0;
+}
+
+export async function verifyPasswordCredential(email: string, password: string): Promise<AdminUser> {
+  const configuredPassword = runtimeEnv().ADMIN_PASSWORD;
+  if (!configuredPassword) throw new Error("ورود با رمز هنوز تنظیم نشده است.");
+
+  const emailAllowed = isAdminEmail(email);
+  const passwordAllowed = await timingSafeEqual(password, configuredPassword);
+  if (!emailAllowed || !passwordAllowed) throw new Error("ایمیل یا رمز عبور صحیح نیست.");
+
+  return { email: ADMIN_EMAIL, displayName: "مدیر Cookie Time" };
+}
+
+type PasswordAttempt = { count: number; expiresAt: number };
+const LOGIN_WINDOW_SECONDS = 15 * 60;
+const MAX_LOGIN_ATTEMPTS = 5;
+
+async function passwordRateKey(request: Request): Promise<string> {
+  const clientAddress = request.headers.get("cf-connecting-ip") || "local";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(clientAddress));
+  const fingerprint = Array.from(new Uint8Array(digest).slice(0, 12), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `auth:password:${fingerprint}`;
+}
+
+async function readPasswordAttempts(request: Request): Promise<{ key: string; attempt: PasswordAttempt | null }> {
+  const key = await passwordRateKey(request);
+  const kv = runtimeEnv().MEDIA_KV;
+  if (!kv) return { key, attempt: null };
+  const attempt = await kv.get<PasswordAttempt>(key, "json");
+  if (!attempt || attempt.expiresAt <= Date.now()) return { key, attempt: null };
+  return { key, attempt };
+}
+
+export async function passwordLoginAllowed(request: Request): Promise<boolean> {
+  const { attempt } = await readPasswordAttempts(request);
+  return !attempt || attempt.count < MAX_LOGIN_ATTEMPTS;
+}
+
+export async function recordPasswordLoginFailure(request: Request): Promise<void> {
+  const kv = runtimeEnv().MEDIA_KV;
+  if (!kv) return;
+  const { key, attempt } = await readPasswordAttempts(request);
+  const next: PasswordAttempt = {
+    count: (attempt?.count ?? 0) + 1,
+    expiresAt: Date.now() + LOGIN_WINDOW_SECONDS * 1000,
+  };
+  await kv.put(key, JSON.stringify(next), { expirationTtl: LOGIN_WINDOW_SECONDS });
+}
+
+export async function clearPasswordLoginFailures(request: Request): Promise<void> {
+  const kv = runtimeEnv().MEDIA_KV;
+  if (!kv) return;
+  await kv.delete(await passwordRateKey(request));
 }
 
 export async function verifyGoogleCredential(credential: string): Promise<AdminUser> {

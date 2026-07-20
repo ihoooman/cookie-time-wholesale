@@ -21,6 +21,7 @@ export function GoogleLogin() {
   const buttonRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState("در حال آماده‌سازی ورود امن...");
   const [error, setError] = useState("");
+  const [available, setAvailable] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,6 +29,11 @@ export function GoogleLogin() {
       try {
         const configResponse = await fetch("/api/auth/google/config", { cache: "no-store" });
         const config = (await configResponse.json()) as { clientId?: string; error?: string };
+        if (configResponse.status === 503) {
+          setAvailable(false);
+          setStatus("");
+          return;
+        }
         if (!configResponse.ok || !config.clientId) throw new Error(config.error || "تنظیمات ورود در دسترس نیست.");
 
         const handleCredential = async (response: GoogleCredentialResponse) => {
@@ -82,12 +88,17 @@ export function GoogleLogin() {
     return () => { cancelled = true; };
   }, []);
 
+  if (!available) return null;
+
   return (
-    <div className="google-login-block">
-      <div className="login-security"><ShieldCheck size={18} /><span>ورود فقط برای حساب مدیر تأییدشده</span></div>
-      <div ref={buttonRef} className="google-button-slot" />
-      {status && <p>{status}</p>}
-      {error && <p className="login-error" role="alert">{error}</p>}
-    </div>
+    <>
+      <div className="login-divider"><span>یا ورود با Google</span></div>
+      <div className="google-login-block">
+        <div className="login-security"><ShieldCheck size={18} /><span>ورود فقط برای حساب مدیر تأییدشده</span></div>
+        <div ref={buttonRef} className="google-button-slot" />
+        {status && <p>{status}</p>}
+        {error && <p className="login-error" role="alert">{error}</p>}
+      </div>
+    </>
   );
 }
