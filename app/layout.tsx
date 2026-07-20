@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { GlassEngine } from "./glass-engine";
 import { PwaRegister } from "./pwa-register";
 
 const metadataBase = new URL("https://seller.time-cookie.com");
@@ -87,6 +88,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body>
+        <GlassEngine />
         {children}
         <PwaRegister />
       </body>

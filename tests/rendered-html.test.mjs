@@ -110,6 +110,22 @@ test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
   assert.match(guide, /Workers & Pages/);
 });
 
+test("liquid glass is tuned independently for Safari and Chromium", async () => {
+  const [styles, glassEngine] = await Promise.all([
+    source("app/globals.css"),
+    source("app/glass-engine.tsx"),
+  ]);
+
+  assert.match(styles, /--glass-regular-blur: 16px/);
+  assert.match(styles, /--glass-card-blur: 18px/);
+  assert.match(styles, /html\[data-glass-engine="safari"\]/);
+  assert.match(styles, /--glass-regular-blur: 7\.2px/);
+  assert.match(styles, /--glass-clear-blur: 3px/);
+  assert.match(styles, /--glass-button-blur: 6px/);
+  assert.match(styles, /--glass-card-blur: 8\.4px/);
+  assert.match(glassEngine, /dataset\.glassEngine = isSafari \? "safari" : "chromium"/);
+});
+
 test("public catalog ships complete technical and content SEO", async () => {
   const [layout, homepage, storefront, sitemap, robots, productPage, worker, adminLayout] = await Promise.all([
     source("app/layout.tsx"),
