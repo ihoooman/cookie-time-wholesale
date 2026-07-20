@@ -304,7 +304,7 @@ export function Storefront() {
         ) : (
           <div className="product-grid">
             {filteredProducts.map((product) => (
-              <article className="product-card" key={product.id}>
+              <article className="product-card liquid-regular" key={product.id}>
                 <button
                   className="product-image-button"
                   type="button"
