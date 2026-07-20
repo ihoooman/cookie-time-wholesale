@@ -15,6 +15,13 @@
       "when": 1784470544990,
       "tag": "0001_wonderful_expediter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784542137632,
+      "tag": "0002_wholesale_product_copy",
+      "breakpoints": true
     }
   ]
 }
