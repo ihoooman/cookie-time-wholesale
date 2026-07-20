@@ -11,5 +11,19 @@
     "directory": "dist/client",
     "not_found_handling": "none",
     "binding": "ASSETS"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "cookie-time-wholesale",
+      "database_id": "56e19454-6fca-4183-bc7e-5e10ccc55625",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "MEDIA_KV",
+      "id": "e11a9b61742d4127beea139881cbcc4c"
+    }
+  ]
 }

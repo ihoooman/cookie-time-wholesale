@@ -12,12 +12,12 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "cf:setup": "wrangler d1 create cookie-time-wholesale --binding DB --update-config && wrangler r2 bucket create cookie-time-media --binding MEDIA --update-config && node scripts/prepare-cloudflare.mjs",
-    "cf:prepare": "node scripts/prepare-cloudflare.mjs",
-    "cf:build": "npm run cf:prepare && npm run build",
+    "cf:setup": "wrangler d1 create cookie-time-wholesale --binding DB --update-config && wrangler kv namespace create cookie-time-media --binding MEDIA_KV --update-config && npm run cf:prepare",
+    "cf:prepare": "node scripts/prepare-cloudflare.mjs && wrangler types",
+    "cf:build": "npm run cf:prepare && CLOUDFLARE_DIRECT_DEPLOY=1 npm run build",
     "cf:migrate": "npm run cf:prepare && wrangler d1 migrations apply DB --remote",
-    "cf:deploy": "npm run cf:migrate && vinext deploy --skip-build",
-    "cf:dry-run": "vinext deploy --dry-run"
+    "cf:deploy": "npm run cf:migrate && CLOUDFLARE_DIRECT_DEPLOY=1 vinext deploy --skip-build",
+    "cf:dry-run": "CLOUDFLARE_DIRECT_DEPLOY=1 vinext deploy --dry-run"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

@@ -1,7 +1,8 @@
 # استقرار Cookie Time روی Cloudflare Workers
 
-این پروژه با `vinext` برای Cloudflare Workers آماده شده است. به Cloudflare Images
-نیاز ندارد؛ دیتابیس روی D1 و تصاویر آپلودی پنل روی R2 قرار می‌گیرند.
+این پروژه با `vinext` برای Cloudflare Workers آماده شده است. به فعال‌سازی Billing،
+Cloudflare Images یا R2 نیاز ندارد؛ دیتابیس روی D1 و تصاویر آپلودی پنل روی
+Workers KV در پلن رایگان قرار می‌گیرند.
 
 ## ۱. ساخت منابع برای اولین بار
 
@@ -11,9 +12,9 @@ npx wrangler login
 npm run cf:setup
 ```
 
-دستور آخر D1 با نام `cookie-time-wholesale` و R2 با نام `cookie-time-media` را
-می‌سازد و شناسه واقعی آن‌ها را داخل `wrangler.jsonc` می‌نویسد. تغییر این فایل را
-commit و push کنید؛ شناسه D1 محرمانه نیست.
+دستور آخر D1 با نام `cookie-time-wholesale` و KV namespace با نام
+`cookie-time-media` را می‌سازد و شناسه واقعی آن‌ها را داخل `wrangler.jsonc`
+می‌نویسد. تغییر این فایل را commit و push کنید؛ شناسه‌های D1 و KV محرمانه نیستند.
 
 ## ۲. متغیرها و Secrets
 

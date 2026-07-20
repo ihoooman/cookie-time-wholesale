@@ -1,4 +1,4 @@
-import { getMediaBucket } from "@/lib/db";
+import { putMediaObject } from "@/lib/db";
 import { isAuthorizedAdminRequest } from "@/lib/admin";
 import { jsonError } from "@/lib/http";
 
@@ -14,9 +14,7 @@ export async function POST(request: Request) {
     if (file.size > 8 * 1024 * 1024) return jsonError("حجم تصویر باید کمتر از ۸ مگابایت باشد.");
     const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "bin";
     const key = `${crypto.randomUUID()}.${extension}`;
-    await getMediaBucket().put(key, await file.arrayBuffer(), {
-      httpMetadata: { contentType: file.type },
-    });
+    await putMediaObject(key, await file.arrayBuffer(), file.type);
     return Response.json({ key, url: `/api/media/${key}` }, { status: 201 });
   } catch {
     return jsonError("آپلود تصویر ممکن نشد.", 500);

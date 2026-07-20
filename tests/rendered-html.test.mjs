@@ -59,6 +59,8 @@ test("deployment includes persistent storage, real media, and social metadata", 
 
   const hostingConfig = JSON.parse(hosting);
   assert.equal(hostingConfig.d1, "DB");
+  // The existing Sites deployment keeps its managed R2 binding; direct Cloudflare
+  // deployments use the free MEDIA_KV binding verified below.
   assert.equal(hostingConfig.r2, "MEDIA");
   assert.match(schema, /sqliteTable\("products"/);
   assert.match(schema, /sqliteTable\("orders"/);
@@ -87,9 +89,12 @@ test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
 
   assert.match(wrangler, /cookie-time-wholesale/);
   assert.match(wrangler, /"keep_vars": true/);
+  assert.match(wrangler, /"binding": "MEDIA_KV"/);
   assert.match(worker, /DB: D1Database/);
-  assert.match(worker, /MEDIA: R2Bucket/);
+  assert.match(worker, /MEDIA_KV: KVNamespace/);
   assert.match(packageJson, /"cf:deploy"/);
+  assert.match(packageJson, /CLOUDFLARE_DIRECT_DEPLOY=1/);
   assert.match(prepareScript, /migrations_dir/);
+  assert.match(prepareScript, /kv_namespaces/);
   assert.match(guide, /Workers & Pages/);
 });

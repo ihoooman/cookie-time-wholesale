@@ -13,7 +13,7 @@
 - ورود Google فقط برای `hoomihooman@gmail.com`
 - گزارش فروش و محصولات پرفروش
 - PWA قابل نصب با طراحی موبایل‌محور و Liquid Glass
-- Cloudflare D1 برای داده‌ها و R2 برای تصاویر آپلودی
+- Cloudflare D1 برای داده‌ها و Workers KV رایگان برای تصاویر آپلودی
 
 ## اجرا
 
@@ -41,8 +41,9 @@ npm run test
 npm run db:generate
 ```
 
-برای استقرار، bindingهای Cloudflare با نام‌های `DB` (D1) و `MEDIA` (R2) و همین
-دو متغیر محیطی لازم‌اند. شماره مقصد واتساپ در `lib/whatsapp.ts` تعریف شده است.
+برای استقرار مستقیم، bindingهای Cloudflare با نام‌های `DB` (D1) و `MEDIA_KV`
+(Workers KV) و همین دو متغیر محیطی لازم‌اند. شماره مقصد واتساپ در
+`lib/whatsapp.ts` تعریف شده است.
 
 راهنمای اتصال مستقیم GitHub به Cloudflare Workers & Pages در
 [`CLOUDFLARE.md`](./CLOUDFLARE.md) قرار دارد.

@@ -56,10 +56,66 @@ function getDatabase(): D1Database {
   return db;
 }
 
-export function getMediaBucket(): R2Bucket {
-  const bucket = (env as unknown as { MEDIA?: R2Bucket }).MEDIA;
-  if (!bucket) throw new Error("فضای ذخیره‌سازی تصویر در دسترس نیست.");
-  return bucket;
+type MediaMetadata = { contentType?: string };
+
+function getMediaBindings(): { MEDIA_KV?: KVNamespace; MEDIA?: R2Bucket } {
+  return env as unknown as { MEDIA_KV?: KVNamespace; MEDIA?: R2Bucket };
+}
+
+export async function putMediaObject(
+  key: string,
+  value: ArrayBuffer,
+  contentType: string,
+): Promise<void> {
+  const bindings = getMediaBindings();
+  if (bindings.MEDIA_KV) {
+    await bindings.MEDIA_KV.put(key, value, { metadata: { contentType } satisfies MediaMetadata });
+    return;
+  }
+  if (bindings.MEDIA) {
+    await bindings.MEDIA.put(key, value, { httpMetadata: { contentType } });
+    return;
+  }
+  throw new Error("فضای ذخیره‌سازی تصویر در دسترس نیست.");
+}
+
+export async function getMediaObject(key: string): Promise<{
+  body: ArrayBuffer | ReadableStream;
+  contentType: string;
+  etag?: string;
+} | null> {
+  const bindings = getMediaBindings();
+  if (bindings.MEDIA_KV) {
+    const object = await bindings.MEDIA_KV.getWithMetadata<MediaMetadata>(key, "arrayBuffer");
+    if (!object.value) return null;
+    return {
+      body: object.value,
+      contentType: object.metadata?.contentType || "application/octet-stream",
+    };
+  }
+  if (bindings.MEDIA) {
+    const object = await bindings.MEDIA.get(key);
+    if (!object) return null;
+    return {
+      body: object.body,
+      contentType: object.httpMetadata?.contentType || "application/octet-stream",
+      etag: object.httpEtag,
+    };
+  }
+  throw new Error("فضای ذخیره‌سازی تصویر در دسترس نیست.");
+}
+
+export async function deleteMediaObject(key: string): Promise<void> {
+  const bindings = getMediaBindings();
+  if (bindings.MEDIA_KV) {
+    await bindings.MEDIA_KV.delete(key);
+    return;
+  }
+  if (bindings.MEDIA) {
+    await bindings.MEDIA.delete(key);
+    return;
+  }
+  throw new Error("فضای ذخیره‌سازی تصویر در دسترس نیست.");
 }
 
 export async function ensureDatabase(): Promise<void> {

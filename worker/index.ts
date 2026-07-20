@@ -4,7 +4,9 @@ import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
-  MEDIA: R2Bucket;
+  MEDIA_KV: KVNamespace;
+  /** Legacy Sites deployment binding; direct Cloudflare deploys use MEDIA_KV. */
+  MEDIA?: R2Bucket;
   GOOGLE_CLIENT_ID?: string;
   AUTH_SECRET?: string;
 }

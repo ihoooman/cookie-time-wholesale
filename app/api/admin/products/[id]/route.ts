@@ -1,4 +1,4 @@
-import { deleteProduct, getMediaBucket, updateProduct } from "@/lib/db";
+import { deleteMediaObject, deleteProduct, updateProduct } from "@/lib/db";
 import { isAuthorizedAdminRequest } from "@/lib/admin";
 import { jsonError, parseProductInput } from "@/lib/http";
 
@@ -26,7 +26,7 @@ export async function DELETE(
   try {
     const { id } = await context.params;
     const imageKey = await deleteProduct(id);
-    if (imageKey) await getMediaBucket().delete(imageKey);
+    if (imageKey) await deleteMediaObject(imageKey);
     return Response.json({ ok: true });
   } catch {
     return jsonError("حذف محصول ممکن نشد.", 500);
