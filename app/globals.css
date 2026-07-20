@@ -143,8 +143,9 @@ img { display: block; max-width: 100%; }
 .desktop-nav { display: flex; align-items: center; gap: 26px; }
 .desktop-nav a, .desktop-nav button { border: 0; background: transparent; cursor: pointer; font-weight: 700; font-size: .93rem; display: inline-flex; align-items: center; gap: 7px; }
 .desktop-nav a:hover, .desktop-nav button:hover { color: var(--burgundy); }
-.cart-trigger { justify-self: end; border-radius: 18px; min-height: 48px; padding: 7px 8px 7px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-.cart-trigger strong { min-width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: var(--burgundy); color: white; }
+.cart-trigger { justify-self: end; border-radius: 18px; min-height: 48px; padding: 7px 8px 7px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; color: white; background: linear-gradient(135deg, rgba(148,31,72,.8), rgba(77,16,37,.62)); border-color: rgba(255,255,255,.56); box-shadow: inset 0 1px 0 rgba(255,255,255,.48), 0 10px 26px rgba(77,16,37,.2); }
+.cart-trigger svg { display: block; flex: 0 0 auto; stroke-width: 2.25; }
+.cart-trigger strong { min-width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: var(--gold-soft); color: var(--burgundy-deep); }
 .cart-trigger span { font-weight: 800; }
 
 .hero { width: min(1460px, calc(100% - 48px)); margin: 0 auto; padding: 12px 0 22px; display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, .72fr); grid-template-rows: 316px 266px; gap: 18px; }
@@ -374,6 +375,7 @@ img { display: block; max-width: 100%; }
   .site-footer div { display: flex; flex-direction: column; gap: 13px; }
   .mobile-tabbar { position: fixed; display: grid; grid-template-columns: repeat(4,1fr); z-index: 60; bottom: max(10px, env(safe-area-inset-bottom)); right: 12px; left: 12px; min-height: 68px; border-radius: 24px; padding: 6px; }
   .mobile-tabbar a, .mobile-tabbar button { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: .66rem; font-weight: 800; cursor: pointer; }
+  .mobile-tabbar svg { display: block; width: 20px; height: 20px; flex: 0 0 auto; stroke-width: 2.25; }
   .mobile-tabbar button:last-child { background: var(--burgundy); color: white; border-radius: 18px; position: relative; }
   .mobile-tabbar strong { position: absolute; top: 5px; left: calc(50% - 24px); min-width: 18px; height: 18px; border-radius: 9px; background: var(--gold); color: var(--burgundy-deep); display: grid; place-items: center; font-size: .6rem; }
   .modal-backdrop { padding: 10px; align-items: end; }
