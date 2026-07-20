@@ -1,5 +1,5 @@
-@import "tailwindcss";
-
+/* Custom CSS only: routing this file through Tailwind's optimizer removes the
+   standard backdrop-filter declaration from Chromium production builds. */
 :root {
   --cream: #f6f1e8;
   --warm-white: #fffdf9;

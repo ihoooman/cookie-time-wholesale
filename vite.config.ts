@@ -44,6 +44,8 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // Keep both standard and WebKit-prefixed backdrop-filter declarations.
+    build: { cssMinify: "esbuild" },
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,

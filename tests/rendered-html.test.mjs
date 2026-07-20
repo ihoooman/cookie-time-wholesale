@@ -1,11 +1,19 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 
 async function source(path) {
   return readFile(new URL(path, root), "utf8");
+}
+
+async function builtStyles() {
+  const assets = new URL("dist/client/assets/", root);
+  const names = await readdir(assets);
+  const styles = names.filter((name) => name.endsWith(".css"));
+  return Promise.all(styles.map((name) => readFile(new URL(name, assets), "utf8")))
+    .then((files) => files.join("\n"));
 }
 
 test("storefront enforces the Persian wholesale WhatsApp contract", async () => {
@@ -111,9 +119,10 @@ test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
 });
 
 test("liquid glass is tuned independently for Safari and Chromium", async () => {
-  const [styles, glassEngine] = await Promise.all([
+  const [styles, glassEngine, productionStyles] = await Promise.all([
     source("app/globals.css"),
     source("app/glass-engine.tsx"),
+    builtStyles(),
   ]);
 
   assert.match(styles, /--glass-regular-blur: 18px/);
@@ -126,6 +135,8 @@ test("liquid glass is tuned independently for Safari and Chromium", async () => 
   assert.match(styles, /--glass-button-blur: 10px/);
   assert.match(styles, /--glass-card-blur: 14px/);
   assert.match(glassEngine, /dataset\.glassEngine = isSafari \? "safari" : "chromium"/);
+  assert.match(productionStyles, /(?:^|[;{])backdrop-filter:\s*blur\(var\(--glass-clear-blur\)\)/);
+  assert.match(productionStyles, /-webkit-backdrop-filter:\s*blur\(var\(--glass-clear-blur\)\)/);
 });
 
 test("public catalog ships complete technical and content SEO", async () => {
