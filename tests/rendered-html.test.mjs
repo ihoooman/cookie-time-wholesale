@@ -116,13 +116,15 @@ test("liquid glass is tuned independently for Safari and Chromium", async () => 
     source("app/glass-engine.tsx"),
   ]);
 
-  assert.match(styles, /--glass-regular-blur: 16px/);
-  assert.match(styles, /--glass-card-blur: 18px/);
+  assert.match(styles, /--glass-regular-blur: 18px/);
+  assert.match(styles, /--glass-clear-blur: 10px/);
+  assert.match(styles, /--glass-button-blur: 12px/);
+  assert.match(styles, /--glass-card-blur: 20px/);
   assert.match(styles, /html\[data-glass-engine="safari"\]/);
-  assert.match(styles, /--glass-regular-blur: 7\.2px/);
-  assert.match(styles, /--glass-clear-blur: 3px/);
-  assert.match(styles, /--glass-button-blur: 6px/);
-  assert.match(styles, /--glass-card-blur: 8\.4px/);
+  assert.match(styles, /--glass-regular-blur: 12px/);
+  assert.match(styles, /--glass-clear-blur: 5px/);
+  assert.match(styles, /--glass-button-blur: 10px/);
+  assert.match(styles, /--glass-card-blur: 14px/);
   assert.match(glassEngine, /dataset\.glassEngine = isSafari \? "safari" : "chromium"/);
 });
 
