@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ihoooman/cookie-time-wholesale/security/advisories/new
+    about: Report security issues privately instead of opening a public issue.
+  - name: Production storefront
+    url: https://seller.time-cookie.com
+    about: Check the current production experience before reporting a storefront issue.

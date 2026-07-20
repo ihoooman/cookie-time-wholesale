@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem in the storefront, admin portal, or deployment.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to provide a complete bug report. Do not include credentials or customer data.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Storefront
+        - Cart or checkout
+        - Admin portal
+        - Authentication
+        - SEO or PWA
+        - Cloudflare deployment
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      placeholder: Safari 19 on iPhone, Chrome 145 on macOS, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or logs
+      description: Remove tokens, personal details, and customer data before attaching evidence.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: This report does not contain a secret or security vulnerability.
+          required: true

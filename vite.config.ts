@@ -45,7 +45,7 @@ export default defineConfig(async () => {
 
   return {
     // Keep both standard and WebKit-prefixed backdrop-filter declarations.
-    build: { cssMinify: "esbuild" },
+    build: { cssMinify: "esbuild" as const },
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
