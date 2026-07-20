@@ -4,6 +4,10 @@
 Cloudflare Images یا R2 نیاز ندارد؛ دیتابیس روی D1 و تصاویر آپلودی پنل روی
 Workers KV در پلن رایگان قرار می‌گیرند.
 
+دامنهٔ اصلی فروش عمده به‌صورت Custom Domain در `wrangler.jsonc` ثبت شده است:
+`https://seller.time-cookie.com`. چون DNS دامنه روی Cloudflare قرار دارد، DNS و
+گواهی SSL این زیردامنه هنگام deploy توسط Cloudflare مدیریت می‌شود.
+
 ## ۱. ساخت منابع برای اولین بار
 
 ```bash

@@ -7,6 +7,12 @@
   ],
   "keep_vars": true,
   "main": "./worker/index.ts",
+  "routes": [
+    {
+      "pattern": "seller.time-cookie.com",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "dist/client",
     "not_found_handling": "none",

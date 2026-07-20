@@ -89,6 +89,8 @@ test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
 
   assert.match(wrangler, /cookie-time-wholesale/);
   assert.match(wrangler, /"keep_vars": true/);
+  assert.match(wrangler, /seller\.time-cookie\.com/);
+  assert.match(wrangler, /"custom_domain": true/);
   assert.match(wrangler, /"binding": "MEDIA_KV"/);
   assert.match(worker, /DB: D1Database/);
   assert.match(worker, /MEDIA_KV: KVNamespace/);
