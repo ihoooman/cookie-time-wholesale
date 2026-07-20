@@ -1,5 +1,5 @@
 {
-  "name": "site-creator-vinext-starter",
+  "name": "cookie-time-wholesale",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -11,7 +11,13 @@
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "cf:setup": "wrangler d1 create cookie-time-wholesale --binding DB --update-config && wrangler r2 bucket create cookie-time-media --binding MEDIA --update-config && node scripts/prepare-cloudflare.mjs",
+    "cf:prepare": "node scripts/prepare-cloudflare.mjs",
+    "cf:build": "npm run cf:prepare && npm run build",
+    "cf:migrate": "npm run cf:prepare && wrangler d1 migrations apply DB --remote",
+    "cf:deploy": "npm run cf:migrate && vinext deploy --skip-build",
+    "cf:dry-run": "vinext deploy --dry-run"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

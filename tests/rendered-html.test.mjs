@@ -75,3 +75,21 @@ test("deployment includes persistent storage, real media, and social metadata", 
     access(new URL("public/manifest.webmanifest", root)),
   ]);
 });
+
+test("Cloudflare Workers deployment is reproducible from GitHub", async () => {
+  const [wrangler, worker, packageJson, guide, prepareScript] = await Promise.all([
+    source("wrangler.jsonc"),
+    source("worker/index.ts"),
+    source("package.json"),
+    source("CLOUDFLARE.md"),
+    source("scripts/prepare-cloudflare.mjs"),
+  ]);
+
+  assert.match(wrangler, /cookie-time-wholesale/);
+  assert.match(wrangler, /"keep_vars": true/);
+  assert.match(worker, /DB: D1Database/);
+  assert.match(worker, /MEDIA: R2Bucket/);
+  assert.match(packageJson, /"cf:deploy"/);
+  assert.match(prepareScript, /migrations_dir/);
+  assert.match(guide, /Workers & Pages/);
+});
