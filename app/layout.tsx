@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Cookie Time",
       images: [
         {
-          url: new URL("/og-wholesale.png", metadataBase),
+          url: new URL("/og-wholesale.webp", metadataBase),
           width: 1200,
           height: 630,
           alt: "Cookie Time — یه گاز تا حال خوب",
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: "Cookie Time | منوی همکاری کافه‌ها",
       description,
-      images: [new URL("/og-wholesale.png", metadataBase)],
+      images: [new URL("/og-wholesale.webp", metadataBase)],
     },
   };
 }

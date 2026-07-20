@@ -66,11 +66,11 @@ test("deployment includes persistent storage, real media, and social metadata", 
   assert.match(migration, /CREATE TABLE `products`/);
   assert.match(wholesaleMigration, /business_name/);
   assert.match(seed, /p-cookie-nutella/);
-  assert.match(layout, /\/og-wholesale\.png/);
+  assert.match(layout, /\/og-wholesale\.webp/);
 
   await Promise.all([
-    access(new URL("public/og-wholesale.png", root)),
-    access(new URL("public/products/cookie-nutella.png", root)),
+    access(new URL("public/og-wholesale.webp", root)),
+    access(new URL("public/products/cookie-nutella.webp", root)),
     access(new URL("public/brand/logo-burgundy.png", root)),
     access(new URL("public/manifest.webmanifest", root)),
   ]);

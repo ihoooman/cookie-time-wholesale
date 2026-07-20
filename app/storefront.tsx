@@ -238,7 +238,7 @@ export function Storefront() {
           <div className="hero-product" aria-hidden="true">
             <span className="hero-orbit orbit-one" />
             <span className="hero-orbit orbit-two" />
-            <img src="/products/cookie-nutella.png" alt="" />
+            <img src="/products/cookie-nutella.webp" alt="" />
           </div>
         </article>
         <article className="bento-card bento-fresh">
@@ -246,14 +246,14 @@ export function Storefront() {
             <span><Clock3 size={16} /> زمان آماده‌سازی</span>
             <strong>۴۸ ساعت</strong>
           </div>
-          <img src="/products/cookie-lotus.png" alt="کوکی لوتوس" />
+          <img src="/products/cookie-lotus.webp" alt="کوکی لوتوس" />
         </article>
         <article className="bento-card bento-pistachio">
           <div>
             <span><Truck size={16} /> همکاری تهران</span>
             <strong>ارسال منظم</strong>
           </div>
-          <img src="/products/cookie-pistachio.png" alt="کوکی پسته" />
+          <img src="/products/cookie-pistachio.webp" alt="کوکی پسته" />
         </article>
       </section>
 
