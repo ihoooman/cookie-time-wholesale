@@ -1,19 +1,36 @@
-name: Validate Cookie Time
+name: CI
 
 on:
   push:
     branches: [main, "codex/**"]
   pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  quality:
+    name: Quality gate
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run test
-      - run: npm run lint
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type-check Cloudflare runtime
+        run: npm run typecheck
+      - name: Audit production dependencies
+        run: npm run audit
+      - name: Build and test
+        run: npm test
