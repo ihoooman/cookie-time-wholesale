@@ -1,8 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { GlassEngine } from "./glass-engine";
 import { PwaRegister } from "./pwa-register";
-import { ThemeSwitcher } from "./theme-switcher";
+
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  display: "swap",
+  variable: "--font-vazirmatn",
+});
 
 const metadataBase = new URL("https://seller.time-cookie.com");
 const description =
@@ -76,33 +82,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#751f39" },
-    { media: "(prefers-color-scheme: dark)", color: "#140b0f" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#751f39",
+  colorScheme: "light",
   viewportFit: "cover",
 };
-
-const themeBootstrap = `(() => {
-  try {
-    const saved = localStorage.getItem("cookie-time-theme");
-    const mode = saved === "light" || saved === "dark" || saved === "system" ? saved : "system";
-    const theme = mode === "system"
-      ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-      : mode;
-    const root = document.documentElement;
-    root.dataset.themeMode = mode;
-    root.dataset.theme = theme;
-    root.style.colorScheme = theme;
-  } catch {
-    const root = document.documentElement;
-    const theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    root.dataset.themeMode = "system";
-    root.dataset.theme = theme;
-    root.style.colorScheme = theme;
-  }
-})();`;
 
 export default function RootLayout({
   children,
@@ -110,13 +93,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
-      </head>
+    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
       <body>
         <GlassEngine />
-        <ThemeSwitcher />
         {children}
         <PwaRegister />
       </body>

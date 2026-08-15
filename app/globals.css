@@ -33,7 +33,7 @@ body {
   margin: 0;
   background: var(--cream);
   color: var(--ink);
-  font-family: Tahoma, Arial, sans-serif;
+  font-family: var(--font-vazirmatn), Tahoma, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 button, input, textarea, select { font: inherit; }
