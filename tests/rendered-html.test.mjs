@@ -25,7 +25,7 @@ test("storefront enforces the Persian wholesale WhatsApp contract", async () => 
     source("lib/db.ts"),
   ]);
 
-  assert.match(layout, /<html lang="fa" dir="rtl" suppressHydrationWarning>/);
+  assert.match(layout, /<html lang="fa" dir="rtl"[^>]*className=\{vazirmatn\.variable\}[^>]*suppressHydrationWarning>/);
   assert.match(storefront, /منوی همکاری کافه‌ها/);
   assert.match(storefront, /نام کافه یا مجموعه/);
   assert.match(storefront, /منطقه \/ محله/);
