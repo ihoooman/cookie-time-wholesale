@@ -240,7 +240,7 @@ export function Storefront({ initialProducts }: { initialProducts: Product[] }) 
           <strong>{priceFormatter.format(itemCount)}</strong>
         </button>
       </header>
-
+    
       <section className="hero" id="top">
         <article className="hero-primary" ref={heroPrimaryRef}>
           <div className="hero-copy">
