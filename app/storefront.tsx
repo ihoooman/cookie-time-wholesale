@@ -246,7 +246,7 @@ export function Storefront({ initialProducts }: { initialProducts: Product[] }) 
           <div className="hero-copy">
             <span className="eyebrow">منوی همکاری کافه‌ها</span>
             <h1><span>سفارش عمده</span><span>کوکی و دسر</span></h1>
-            <p>تولید روزانه Cookie Time برای کافه‌ها و مجموعه‌های تهران؛ کوکی و دسر دست‌ساز، آماده سرو و مناسب تأمین منظم ویترین.</p>
+            <p>تولید روزانه Cookie Time برای کافه‌ها و مجموعه‌های تهران؛ کوکی و دسر دست‌ساز، آماده سرو و مناسب درخشیدن در ویترین.</p>
             <button className="primary-action liquid-clear" type="button" onClick={scrollToMenu}>
               شروع سفارش عمده
               <ArrowLeft size={20} />
@@ -312,7 +312,7 @@ export function Storefront({ initialProducts }: { initialProducts: Product[] }) 
                   onClick={() => setSelectedProduct(product)}
                   aria-label={`مشاهده ${product.name}`}
                 >
-                  {product.featured && <span className="product-badge"><Sparkles size={13} /> انتخاب کافه‌ها</span>}
+                  {product.featured && <span className="product-badge"><Sparkles size={13} /> انتخاب محبوب</span>}
                   <img src={product.imageUrl} alt={product.name} loading="lazy" />
                 </button>
                 <div className="product-info">
@@ -363,9 +363,21 @@ export function Storefront({ initialProducts }: { initialProducts: Product[] }) 
           <p>تولید روزانه، بسته‌بندی بهداشتی و آماده سرو، وزن ثابت و مواد اولیه پریمیوم؛ برای تجربه‌ای که مشتری کافه دوباره سراغش می‌آید.</p>
         </div>
         <div className="story-points">
-          <div><strong>تازه</strong><span>تولید روزانه</span></div>
-          <div><strong>ثابت</strong><span>وزن و کیفیت هر سفارش</span></div>
-          <div><strong>آماده</strong><span>سرو در کافه و ویترین</span></div>
+          <div>
+            <span className="story-icon" aria-hidden="true"><Sparkles size={20} /></span>
+            <strong>تازه</strong>
+            <p>تولید روزانه</p>
+          </div>
+          <div>
+            <span className="story-icon" aria-hidden="true"><CheckCircle2 size={20} /></span>
+            <strong>ثابت</strong>
+            <p>وزن و کیفیت هر سفارش</p>
+          </div>
+          <div>
+            <span className="story-icon" aria-hidden="true"><PackageCheck size={20} /></span>
+            <strong>آماده</strong>
+            <p>سرو در کافه و ویترین</p>
+          </div>
         </div>
       </section>
 
